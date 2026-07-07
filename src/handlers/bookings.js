@@ -33,7 +33,7 @@ export async function handleBookings(request, env) {
 
   for (const room of config.ROOMS) {
     try {
-      const result = await fetchRoomBookingsMultiMonth(client, room, months);
+      const result = await fetchRoomBookingsMultiMonth(client, room, months, daysParam);
       bookingsData[room.name] = result;
     } catch (err) {
       if (err === SESSION_EXPIRED) {
@@ -65,7 +65,7 @@ function groupDaysByMonth(daysParam) {
   return Object.values(map);
 }
 
-async function fetchRoomBookingsMultiMonth(client, room, months) {
+async function fetchRoomBookingsMultiMonth(client, room, months, daysParam) {
   log(`Fetching board: ${room.name} (${room.url})`);
   const boardResp = await client.get(room.url);
   const boardHtml = await boardResp.text();
@@ -130,10 +130,10 @@ async function fetchRoomBookingsMultiMonth(client, room, months) {
   });
 
   if (combinedRows.length === 0 && hasMissing) {
-    return { error: 'no-thread', days: months.map(m => `${m.month}/${m.year}`).join(',') };
+    return { error: 'no-thread', days: daysParam };
   }
 
-  return { rows: combinedRows, days: months.map(m => `${m.month}/${m.year}`).join(',') };
+  return { rows: combinedRows, days: daysParam };
 }
 
 function resolveUrl(href, baseUrl) {
