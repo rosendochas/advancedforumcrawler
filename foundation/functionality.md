@@ -80,7 +80,7 @@ En la cabecera de la página hay un botón **"Volver al calendario"** que regres
 
 A continuación, la página muestra una sección por cada sala disponible. Cada sección se puede colapsar y contiene lo siguiente:
 
-- El **nombre de la sala** y un **enlace al tablón original del foro** (se abre en una pestaña nueva).
+- El **nombre de la sala** es un botón negro con texto blanco que abre el tablón original del foro en una pestaña nueva.
 - Una tabla con las reservas de los días seleccionados para esa sala, ordenadas por fecha ascendente y después por hora de inicio:
 
 | Fecha       | Hora         | Usuario | Actividad                        |

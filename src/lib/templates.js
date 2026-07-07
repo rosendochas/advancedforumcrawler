@@ -16,6 +16,8 @@ export function layout(title, content, extraHead = '') {
     .btn-primary { background: #e60205; color: #fff; }
     .btn-primary:hover { background: #c00103; }
     .btn-primary:disabled { background: #e88; cursor: not-allowed; }
+    .btn-room { background: #333; color: #fff; text-decoration: none; padding: 6px 14px; border-radius: 4px; font-size: 1rem; display: inline-block; }
+    .btn-room:hover { background: #555; }
     .btn-danger { background: #e0e0e0; color: #222; }
     .btn-danger:hover { background: #ccc; }
     .btn-secondary { background: #333; color: #fff; }
@@ -352,7 +354,7 @@ export function bookingsPage(username, rooms, bookingsData, announceError = '') 
     roomsHtml += `
       <div class="card">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-          <h3>${room.name} <a href="${room.url}" target="_blank" style="font-size:0.8rem;font-weight:normal;">(tablón original)</a></h3>
+          <h3><a href="${room.url}" target="_blank" class="btn btn-room">${room.name}</a></h3>
           <a href="/reserve?room=${encodeURIComponent(room.name)}&days=${encodeURIComponent(data?.days || '')}" class="btn btn-primary">Reservar</a>
         </div>
         ${sectionContent}
