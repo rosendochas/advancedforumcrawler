@@ -57,8 +57,11 @@ A continuación, esta página muestra un formulario con los siguientes campos:
 - Navegación entre meses y años:
     - El campo AÑO no permite valores inferiores al año actual ni superiores al año siguiente.
     - El campo MES no permite seleccionar un mes anterior al actual cuando el año seleccionado es el año actual (en la práctica, esos meses no aparecen en el desplegable).
+    - Hay dos botones de navegación rápida: `<` a la izquierda del año y `>` a la derecha del mes. Permiten moverse un mes atrás o adelante respectivamente.
+        - El botón `<` se deshabilita si se ha alcanzado el mes actual del año actual (no se puede ir más atrás).
+        - El botón `>` se deshabilita si se ha alcanzado diciembre del año siguiente (no se puede ir más adelante).
     - Cambiar el MES mantiene la lista de DÍAS SELECCIONADOS tal cual.
-    - En ambos casos se redibuja la cuadrícula del nuevo mes. Los días ya seleccionados que pertenezcan a meses distintos del que se está mostrando no se ven resaltados en la cuadrícula, pero siguen apareciendo en la lista de DÍAS SELECCIONADOS.
+    - En todos los casos se redibuja la cuadrícula del nuevo mes. Los días ya seleccionados que pertenezcan a meses distintos del que se está mostrando no se ven resaltados en la cuadrícula, pero siguen apareciendo en la lista de DÍAS SELECCIONADOS.
 
 ##### Indicadores visuales de actividad del usuario
 

@@ -33,6 +33,7 @@ export function layout(title, content, extraHead = '') {
     @keyframes spin { to { transform: rotate(360deg); } }
     .checkbox-group { display: flex; align-items: center; gap: 8px; }
     .checkbox-group input[type="checkbox"] { width: auto; }
+    @media (max-width: 599px) { .btn-nav-label { display: none; } }
     ${extraHead}
   </style>
 </head>
@@ -104,19 +105,27 @@ export function calendarPage(username, year, months, selectedDays) {
     <div class="container">
       <div class="card">
         <form method="GET" action="/bookings" id="calendar-form">
-          <div class="form-group" style="display:flex;gap:12px;">
+          <div class="form-group" style="display:flex;gap:8px;align-items:start;">
             <div style="flex:1;">
               <label for="year">Año</label>
               <select id="year" name="year">
                 <option value="${year}" selected>${year}</option>
                 <option value="${year + 1}">${year + 1}</option>
               </select>
+              <div style="display:flex;gap:4px;margin-top:6px;">
+                <button type="button" class="btn btn-secondary" id="prev-year" style="flex:1;">&lt;<span class="btn-nav-label"> Anterior</span></button>
+                <button type="button" class="btn btn-secondary" id="next-year" style="flex:1;"><span class="btn-nav-label">Siguiente </span>&gt;</button>
+              </div>
             </div>
             <div style="flex:1;">
               <label for="month">Mes</label>
               <select id="month" name="month">
                 ${months.map(m => `<option value="${m.value}" ${m.selected ? 'selected' : ''}>${m.label}</option>`).join('')}
               </select>
+              <div style="display:flex;gap:4px;margin-top:6px;">
+                <button type="button" class="btn btn-secondary" id="prev-month" style="flex:1;">&lt;<span class="btn-nav-label"> Anterior</span></button>
+                <button type="button" class="btn btn-secondary" id="next-month" style="flex:1;"><span class="btn-nav-label">Siguiente </span>&gt;</button>
+              </div>
             </div>
           </div>
           <div class="form-group">
@@ -225,28 +234,28 @@ export function calendarPage(username, year, months, selectedDays) {
       document.getElementById('year').addEventListener('change', function() {
         currentYear = parseInt(this.value);
         updateMonthOptions();
+        updateNavButtons();
         fetchUserPosts();
       });
 
       document.getElementById('month').addEventListener('change', function() {
         currentMonth = parseInt(this.value);
         renderCalendar();
+        updateNavButtons();
         fetchUserPosts();
       });
 
       function updateMonthOptions() {
         const monthSel = document.getElementById('month');
-        const currentVal = monthSel.value;
         monthSel.innerHTML = '';
-        const today = new Date();
         const startMonth = (currentYear === today.getFullYear()) ? today.getMonth() + 1 : 1;
         for (let m = startMonth; m <= 12; m++) {
           const opt = document.createElement('option');
           opt.value = m;
           opt.textContent = monthNames[m - 1];
-          if (m === parseInt(currentVal)) opt.selected = true;
           monthSel.appendChild(opt);
         }
+        monthSel.value = String(currentMonth);
         currentMonth = parseInt(monthSel.value);
         renderCalendar();
       }
@@ -259,7 +268,56 @@ export function calendarPage(username, year, months, selectedDays) {
         this.appendChild(input);
       });
 
+      const today = new Date();
+      const boundaryYear = today.getFullYear();
+      const boundaryMonth = today.getMonth() + 1;
+
+      function updateNavButtons() {
+        document.getElementById('prev-month').disabled =
+          currentYear === boundaryYear && currentMonth <= boundaryMonth;
+        document.getElementById('next-month').disabled =
+          currentYear === boundaryYear + 1 && currentMonth >= 12;
+        document.getElementById('prev-year').disabled =
+          currentYear <= boundaryYear;
+        document.getElementById('next-year').disabled =
+          currentYear >= boundaryYear + 1;
+      }
+
+      function navigateToMonth(newYear, newMonth) {
+        currentYear = Math.max(boundaryYear, Math.min(boundaryYear + 1, newYear));
+        if (currentYear === boundaryYear) {
+          currentMonth = Math.max(boundaryMonth, Math.min(12, newMonth));
+        } else {
+          currentMonth = Math.max(1, Math.min(12, newMonth));
+        }
+        document.getElementById('year').value = currentYear;
+        updateMonthOptions();
+        updateNavButtons();
+        fetchUserPosts();
+      }
+
+      document.getElementById('prev-month').addEventListener('click', function() {
+        let y = currentMonth <= 1 ? currentYear - 1 : currentYear;
+        let m = currentMonth <= 1 ? 12 : currentMonth - 1;
+        navigateToMonth(y, m);
+      });
+
+      document.getElementById('next-month').addEventListener('click', function() {
+        let y = currentMonth >= 12 ? currentYear + 1 : currentYear;
+        let m = currentMonth >= 12 ? 1 : currentMonth + 1;
+        navigateToMonth(y, m);
+      });
+
+      document.getElementById('prev-year').addEventListener('click', function() {
+        navigateToMonth(currentYear - 1, boundaryMonth);
+      });
+
+      document.getElementById('next-year').addEventListener('click', function() {
+        navigateToMonth(currentYear + 1, 1);
+      });
+
       renderCalendar();
+      updateNavButtons();
       fetchUserPosts();
     </script>
   `);
