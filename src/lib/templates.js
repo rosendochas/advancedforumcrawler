@@ -9,17 +9,18 @@ export function layout(title, content, extraHead = '') {
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f0f0f0; color: #222; min-height: 100vh; }
     .container { max-width: 900px; margin: 0 auto; padding: 20px; }
-    .header { background: #1a3a5c; color: #fff; padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; }
+    .header { background: #e60205; color: #fff; padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; }
     .header h1 { font-size: 1.1rem; }
-    .header .user-info { font-size: 0.9rem; color: #aac; }
+    .header .user-info { font-size: 0.9rem; color: #fcc; }
     .btn { display: inline-block; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; font-size: 0.9rem; text-decoration: none; }
-    .btn-primary { background: #1a3a5c; color: #fff; }
-    .btn-primary:hover { background: #2a4a6c; }
-    .btn-primary:disabled { background: #8a9aac; cursor: not-allowed; }
-    .btn-danger { background: #c0392b; color: #fff; }
-    .btn-danger:hover { background: #e74c3c; }
-    .btn-secondary { background: #7f8c8d; color: #fff; }
-    .btn-secondary:hover { background: #95a5a6; }
+    .btn-primary { background: #e60205; color: #fff; }
+    .btn-primary:hover { background: #c00103; }
+    .btn-primary:disabled { background: #e88; cursor: not-allowed; }
+    .btn-danger { background: #e0e0e0; color: #222; }
+    .btn-danger:hover { background: #ccc; }
+    .btn-secondary { background: #333; color: #fff; }
+    .btn-secondary:hover { background: #555; }
+    .btn-secondary:disabled { background: #999; color: #ddd; cursor: not-allowed; }
     .card { background: #fff; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.12); padding: 20px; margin-bottom: 16px; }
     .form-group { margin-bottom: 14px; }
     .form-group label { display: block; font-weight: 600; margin-bottom: 4px; font-size: 0.9rem; }
@@ -95,7 +96,7 @@ export function calendarPage(username, year, months, selectedDays) {
   return layout('Calendario', `
     <div class="header">
       <div>
-        <h1>Mecatol Foros</h1>
+        <h1>FOROS MECATOL REX</h1>
         <span class="user-info">Suplantando a: ${username}</span>
       </div>
       <a href="/logout" class="btn btn-danger">Cerrar sesión</a>
@@ -170,7 +171,7 @@ export function calendarPage(username, year, months, selectedDays) {
             div.style.cursor = 'not-allowed';
           } else {
             if (selectedDays.includes(dateStr)) {
-              div.style.background = '#3498db';
+              div.style.background = '#e74c3c';
               div.style.color = '#fff';
             } else {
               div.style.background = '#e0e0e0';
@@ -321,7 +322,7 @@ export function bookingsPage(username, rooms, bookingsData, announceError = '') 
   return layout('Reservas', `
     <div class="header">
       <div>
-        <h1>Mecatol Foros</h1>
+        <h1>FOROS MECATOL REX</h1>
         <span class="user-info">Suplantando a: ${username}</span>
       </div>
       <a href="/calendar" class="btn btn-secondary">Volver al calendario</a>
@@ -340,7 +341,7 @@ export function reservePage(username, room, days, formData, error) {
   return layout('Reservar', `
     <div class="header">
       <div>
-        <h1>Mecatol Foros</h1>
+        <h1>FOROS MECATOL REX</h1>
         <span class="user-info">Suplantando a: ${username}</span>
       </div>
       <a href="/bookings?days=${encodeURIComponent(days)}" class="btn btn-secondary">Volver</a>
