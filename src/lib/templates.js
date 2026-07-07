@@ -1,4 +1,4 @@
-export function layout(title, content, extraHead = '') {
+export function layout(title, content, extraHead = '', version = '0.0.0') {
   return `<!DOCTYPE html>
 <html lang="es">
 <head>
@@ -18,6 +18,7 @@ export function layout(title, content, extraHead = '') {
     .btn-primary:disabled { background: #e88; cursor: not-allowed; }
     .btn-room { background: #333; color: #fff; text-decoration: none; padding: 6px 14px; border-radius: 4px; font-size: 1rem; display: inline-block; }
     .btn-room:hover { background: #555; }
+    .footer { text-align: center; padding: 20px; font-size: 0.8rem; color: #999; }
     .btn-danger { background: #e0e0e0; color: #222; }
     .btn-danger:hover { background: #ccc; }
     .btn-secondary { background: #333; color: #fff; }
@@ -44,6 +45,7 @@ export function layout(title, content, extraHead = '') {
     <div class="spinner"></div>
   </div>
   ${content}
+  <div class="footer">v${version}</div>
   <script>
     function showLoader() { document.getElementById('loader').classList.remove('hidden'); }
     function hideLoader() { document.getElementById('loader').classList.add('hidden'); }
@@ -68,7 +70,7 @@ export function layout(title, content, extraHead = '') {
 </html>`;
 }
 
-export function loginPage(error = '') {
+export function loginPage(error = '', version = '0.0.0') {
   const errorHtml = error ? `<div class="error">${error}</div>` : '';
   return layout('Identificarse', `
     <div class="container" style="max-width: 400px; margin-top: 80px;">
@@ -88,10 +90,10 @@ export function loginPage(error = '') {
         </form>
       </div>
     </div>
-  `);
+  `, '', version);
 }
 
-export function calendarPage(username, year, months, selectedDays) {
+export function calendarPage(username, year, months, selectedDays, version = '0.0.0') {
   const daysList = selectedDays.length
     ? selectedDays.map(d => `<li>${d}</li>`).join('')
     : '<li style="color:#888;">Ningún día seleccionado</li>';
@@ -322,10 +324,10 @@ export function calendarPage(username, year, months, selectedDays) {
       updateNavButtons();
       fetchUserPosts();
     </script>
-  `);
+  `, '', version);
 }
 
-export function bookingsPage(username, rooms, bookingsData, announceError = '') {
+export function bookingsPage(username, rooms, bookingsData, announceError = '', version = '0.0.0') {
   let roomsHtml = '';
   for (const room of rooms) {
     const data = bookingsData[room.name];
@@ -391,10 +393,10 @@ export function bookingsPage(username, rooms, bookingsData, announceError = '') 
       ${roomsHtml}
     </div>
     ${announceModal}
-  `);
+  `, '', version);
 }
 
-export function reservePage(username, room, days, formData, error) {
+export function reservePage(username, room, days, formData, error, version = '0.0.0') {
   const errorHtml = error ? `<div class="error">${error}</div>` : '';
   const dayOptions = days.split(',').map(d => `<option value="${d.trim()}">${d.trim()}</option>`).join('');
 
@@ -476,7 +478,7 @@ export function reservePage(username, room, days, formData, error) {
       startH.addEventListener('change', updateEndHours);
       startM.addEventListener('change', function() { endM.value = this.value; });
     </script>
-  `);
+  `, '', version);
 }
 
 function hoursOptions(selected) {

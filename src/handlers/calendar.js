@@ -20,7 +20,7 @@ export async function handleCalendar(request, env) {
 
   const months = generateMonthOptions(selectedYear, now, selectedMonth);
 
-  const html = calendarPage(session.username, selectedYear, months, selectedDays);
+  const html = calendarPage(session.username, selectedYear, months, selectedDays, env.BUILD_VERSION);
   return new Response(html, {
     headers: { 'Content-Type': 'text/html; charset=utf-8' },
   });

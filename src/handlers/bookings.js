@@ -44,7 +44,7 @@ export async function handleBookings(request, env) {
     }
   }
 
-  const html = bookingsPage(session.username, config.ROOMS, bookingsData, announceError);
+  const html = bookingsPage(session.username, config.ROOMS, bookingsData, announceError, env.BUILD_VERSION);
   return new Response(html, {
     headers: { 'Content-Type': 'text/html; charset=utf-8' },
   });

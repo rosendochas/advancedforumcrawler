@@ -7,6 +7,7 @@
     "ROOMS": "Arkham,https://www.mecatolrex.com/foro/index.php?board=7.0;Nostromo,https://www.mecatolrex.com/foro/index.php?board=8.0;Moria,https://www.mecatolrex.com/foro/index.php?board=26.0",
     "WHO": "https://www.mecatolrex.com/foro/index.php?board=2.0",
     "FORUM_BASE": "https://www.mecatolrex.com/foro",
-    "DEBUG": "false"
+    "DEBUG": "false",
+    "BUILD_VERSION": "0.1.0"
   }
 }

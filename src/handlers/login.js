@@ -14,7 +14,7 @@ export async function handleLogin(request, env) {
     return handleLoginPost(request, env);
   }
 
-  return new Response(loginPage(), {
+  return new Response(loginPage('', env.BUILD_VERSION), {
     headers: { 'Content-Type': 'text/html; charset=utf-8' },
   });
 }
@@ -25,7 +25,7 @@ async function handleLoginPost(request, env) {
   const password = formData.get('password');
 
   if (!email || !password) {
-    return new Response(loginPage('Email y contraseña son obligatorios.'), {
+    return new Response(loginPage('Email y contraseña son obligatorios.', env.BUILD_VERSION), {
       headers: { 'Content-Type': 'text/html; charset=utf-8' },
     });
   }
@@ -53,11 +53,11 @@ async function handleLoginPost(request, env) {
 
     if (loginResp.status === 403) {
       if (responseHtml.includes('Verificaci') || responseHtml.includes('sesi')) {
-        return new Response(loginPage('Error de verificación de sesión. Inténtalo de nuevo.'), {
+        return new Response(loginPage('Error de verificación de sesión. Inténtalo de nuevo.', env.BUILD_VERSION), {
           headers: { 'Content-Type': 'text/html; charset=utf-8' },
         });
       }
-      return new Response(loginPage('Error de autenticación (403). Revisa credenciales.'), {
+      return new Response(loginPage('Error de autenticación (403). Revisa credenciales.', env.BUILD_VERSION), {
         headers: { 'Content-Type': 'text/html; charset=utf-8' },
       });
     }
@@ -65,7 +65,7 @@ async function handleLoginPost(request, env) {
     const result = parseLoginResponse(responseHtml);
 
     if (!result.success) {
-      return new Response(loginPage('Credenciales incorrectas.'), {
+      return new Response(loginPage('Credenciales incorrectas.', env.BUILD_VERSION), {
         headers: { 'Content-Type': 'text/html; charset=utf-8' },
       });
     }
@@ -86,7 +86,7 @@ async function handleLoginPost(request, env) {
     return response;
   } catch (err) {
     logError('Login error:', err);
-    return new Response(loginPage('Error de conexión con el foro. Inténtalo de nuevo.'), {
+    return new Response(loginPage('Error de conexión con el foro. Inténtalo de nuevo.', env.BUILD_VERSION), {
       headers: { 'Content-Type': 'text/html; charset=utf-8' },
     });
   }

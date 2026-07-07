@@ -43,7 +43,7 @@ export async function handleReserve(request, env) {
     return new Response(null, { status: 302, headers: { Location: '/calendar' } });
   }
 
-  const html = reservePage(session.username, roomName, days, null, '');
+  const html = reservePage(session.username, roomName, days, null, '', env.BUILD_VERSION);
   return new Response(html, {
     headers: { 'Content-Type': 'text/html; charset=utf-8' },
   });
@@ -62,14 +62,14 @@ async function handleReservePost(env, session, room, days, postFields) {
   if (!date || !startHours || !startMinutes || !endHours || !endMinutes || !activity) {
     const html = reservePage(session.username, room.name, days,
       { startHours, startMinutes, endHours, endMinutes },
-      'Todos los campos obligatorios deben estar rellenados.');
+      'Todos los campos obligatorios deben estar rellenados.', env.BUILD_VERSION);
     return new Response(html, { headers: { 'Content-Type': 'text/html; charset=utf-8' } });
   }
 
   if (announce && !who) {
     const html = reservePage(session.username, room.name, days,
       { startHours, startMinutes, endHours, endMinutes },
-      'Debes especificar los asistentes si marcas "Anunciar".');
+      'Debes especificar los asistentes si marcas "Anunciar".', env.BUILD_VERSION);
     return new Response(html, { headers: { 'Content-Type': 'text/html; charset=utf-8' } });
   }
 
@@ -82,7 +82,7 @@ async function handleReservePost(env, session, room, days, postFields) {
     if (!result.success) {
       const html = reservePage(session.username, room.name, days,
         { startHours, startMinutes, endHours, endMinutes },
-        result.error || 'Error al realizar la reserva.');
+        result.error || 'Error al realizar la reserva.', env.BUILD_VERSION);
       return new Response(html, { headers: { 'Content-Type': 'text/html; charset=utf-8' } });
     }
 
@@ -108,7 +108,7 @@ async function handleReservePost(env, session, room, days, postFields) {
     logError('Reserve error:', err);
     const html = reservePage(session.username, room.name, days,
       { startHours, startMinutes, endHours, endMinutes },
-      'Error de conexión con el foro.');
+      'Error de conexión con el foro.', env.BUILD_VERSION);
     return new Response(html, { headers: { 'Content-Type': 'text/html; charset=utf-8' } });
   }
 }
