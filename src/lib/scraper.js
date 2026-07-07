@@ -165,3 +165,103 @@ export function parseBookingTable(html) {
 
   return rows;
 }
+
+const ES_MONTHS = {
+  'enero':1,'febrero':2,'marzo':3,'abril':4,'mayo':5,'junio':6,
+  'julio':7,'agosto':8,'septiembre':9,'octubre':10,'noviembre':11,'diciembre':12
+};
+const EN_MONTHS = {
+  'jan':1,'feb':2,'mar':3,'apr':4,'may':5,'jun':6,
+  'jul':7,'aug':8,'sep':9,'oct':10,'nov':11,'dec':12
+};
+
+export function parseSMFDate(dateStr) {
+  const m = dateStr.match(/^(\w+)\s+(\d+),\s+(\d{4})/);
+  if (!m) return null;
+  const month = EN_MONTHS[m[1].toLowerCase()];
+  if (!month) return null;
+  return { year: parseInt(m[3]), month, day: parseInt(m[2]) };
+}
+
+function extractDateFromSubject(subject) {
+  const m = subject.match(/^Re:\w+\s+(\d+)\s+(?:de\s+)?(\w+?)(?:\s+del?\s+(\d{4}))?\s*$/i);
+  if (!m) return null;
+  const month = ES_MONTHS[m[2].toLowerCase().replace(/[\.]$/, '')];
+  if (!month) return null;
+  return { day: parseInt(m[1]), month, year: m[3] ? parseInt(m[3]) : null };
+}
+
+function extractDatesFromReservationBody(bodyText, pubDate) {
+  const dates = [];
+  const cleaned = bodyText.replace(/<br\s*\/?>/gi, '\n').replace(/<[^>]*>/g, ' ').replace(/&nbsp;/gi, ' ').replace(/\s+/g, ' ').trim();
+
+  const withMonth = /(?:para|reserva[:\s])\s*(?:el|la|)\s*(?:\w+\s+)?(\d+)\s+de\s+(\w+)/gi;
+  let m;
+  while ((m = withMonth.exec(cleaned)) !== null) {
+    const month = ES_MONTHS[m[2].toLowerCase()];
+    if (month) dates.push({ day: parseInt(m[1]), month, year: null });
+  }
+
+  if (dates.length === 0) {
+    const dayOnly = cleaned.match(/(?:para\s+(?:el|la|)\s*(?:\w+\s+)?|^reserva[:\s]+)(\d+)\s+de\s+/i);
+    if (dayOnly) {
+      dates.push({ day: parseInt(dayOnly[1]), month: pubDate.month, year: pubDate.year });
+    }
+  }
+
+  return dates.map(d => ({ day: d.day, month: d.month, year: d.year || pubDate.year }));
+}
+
+export function parseUserPostsPage(html) {
+  const posts = [];
+  const blocks = html.split(/<div class="windowbg">/);
+  for (let i = 1; i < blocks.length; i++) {
+    const block = blocks[i];
+    const topicMatch = block.match(/<div class="topic_details">([\s\S]*?)<\/div>/);
+    if (!topicMatch) continue;
+
+    const boardMatch = topicMatch[1].match(/<a[^>]*href="[^"]*board=(\d+)[^"]*"[^>]*>([^<]*)<\/a>/);
+    const subjectMatch = topicMatch[1].match(/<a[^>]*href="[^"]*topic=\d+\.msg\d+#msg\d+[^"]*"[^>]*>([^<]*)<\/a>/);
+    if (!boardMatch || !subjectMatch) continue;
+
+    const dateMatch = block.match(/<span class="smalltext">([^<]*)<\/span>/);
+    const bodyMatch = block.match(/<div class="post">[\s\S]*?<div class="inner">([\s\S]*?)<\/div>/);
+    const bodyText = bodyMatch ? bodyMatch[1].replace(/<[^>]*>/g, ' ').replace(/&nbsp;/gi, ' ').replace(/\s+/g, ' ').trim() : '';
+
+    const pubDate = dateMatch ? parseSMFDate(dateMatch[1].trim()) : null;
+    if (!pubDate) continue;
+
+    posts.push({
+      boardId: boardMatch[1],
+      boardName: boardMatch[2].trim(),
+      subject: subjectMatch[1].trim(),
+      pubDate,
+      bodyText,
+    });
+  }
+  return posts;
+}
+
+export function classifyPostDates(posts, whoBoardId, roomBoardIds) {
+  const reservations = {};
+  const announcements = {};
+
+  for (const post of posts) {
+    if (post.boardId === whoBoardId) {
+      const d = extractDateFromSubject(post.subject);
+      if (d) announcements[`${d.day}-${d.month}`] = true;
+    } else if (roomBoardIds.includes(post.boardId)) {
+      const dates = extractDatesFromReservationBody(post.bodyText, post.pubDate);
+      for (const d of dates) {
+        reservations[`${d.day}-${d.month}`] = true;
+      }
+    }
+  }
+
+  return { reservations, announcements };
+}
+
+export function extractBoardId(url) {
+  const m = url.match(/board=(\d+)/);
+  return m ? m[1] : null;
+}

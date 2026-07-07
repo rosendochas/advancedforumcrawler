@@ -139,6 +139,7 @@ export function calendarPage(username, year, months, selectedDays) {
       let selectedDays = ${JSON.stringify(selectedDays)};
       let currentYear = ${year};
       let currentMonth = parseInt(document.getElementById('month').value);
+      let userPosts = {};
 
       function renderCalendar() {
         const grid = document.getElementById('calendar-grid');
@@ -152,10 +153,15 @@ export function calendarPage(username, year, months, selectedDays) {
         for (let i = 0; i < startOffset; i++) { const div = document.createElement('div'); grid.appendChild(div); }
         for (let day = 1; day <= daysInMonth; day++) {
           const div = document.createElement('div');
-          div.textContent = day;
-          div.style.padding = '8px';
+          div.style.padding = '6px 8px 4px';
           div.style.borderRadius = '4px';
           div.style.cursor = 'pointer';
+          div.style.display = 'flex';
+          div.style.flexDirection = 'column';
+          div.style.alignItems = 'center';
+          const daySpan = document.createElement('span');
+          daySpan.textContent = day;
+          div.appendChild(daySpan);
           const dateStr = String(day).padStart(2,'0') + '/' + String(currentMonth).padStart(2,'0') + '/' + String(currentYear).slice(-2);
           const cellDate = new Date(currentYear, currentMonth - 1, day);
           if (cellDate < todayDate && currentYear === today.getFullYear() && currentMonth === today.getMonth() + 1) {
@@ -178,8 +184,28 @@ export function calendarPage(username, year, months, selectedDays) {
               updateSelectedList();
             });
           }
+          if (userPosts[day] && !(cellDate < todayDate && currentYear === today.getFullYear() && currentMonth === today.getMonth() + 1)) {
+            const dot = document.createElement('span');
+            dot.style.display = 'block';
+            dot.style.width = '6px';
+            dot.style.height = '6px';
+            dot.style.borderRadius = '50%';
+            dot.style.marginTop = '2px';
+            dot.style.background = userPosts[day].announcement ? '#2ecc71' : '#e67e22';
+            div.appendChild(dot);
+          }
           grid.appendChild(div);
         }
+      }
+
+      async function fetchUserPosts() {
+        try {
+          const resp = await fetch('/user-posts?year=' + currentYear + '&month=' + currentMonth);
+          if (resp.ok) {
+            userPosts = await resp.json();
+            renderCalendar();
+          }
+        } catch {}
       }
 
       function updateSelectedList() {
@@ -198,11 +224,13 @@ export function calendarPage(username, year, months, selectedDays) {
       document.getElementById('year').addEventListener('change', function() {
         currentYear = parseInt(this.value);
         updateMonthOptions();
+        fetchUserPosts();
       });
 
       document.getElementById('month').addEventListener('change', function() {
         currentMonth = parseInt(this.value);
         renderCalendar();
+        fetchUserPosts();
       });
 
       function updateMonthOptions() {
@@ -231,6 +259,7 @@ export function calendarPage(username, year, months, selectedDays) {
       });
 
       renderCalendar();
+      fetchUserPosts();
     </script>
   `);
 }

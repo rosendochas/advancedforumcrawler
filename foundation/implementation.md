@@ -154,3 +154,43 @@ La sesión de la aplicación se gestiona en `src/lib/session.js`:
 ### Extracción del nombre de usuario
 
 Tras un login exitoso, se hace una petición a `/index.php?action=profile` y se extrae el nombre de usuario del `<title>` de la página, que en SMF 2.1 tiene el formato `"Perfil de <username>"`. La función `extractUsernameFromProfile(html)` en `src/lib/scraper.js` se encarga de esto.
+
+### Indicadores visuales de actividad: endpoint `/user-posts`
+
+**Handler**: `src/handlers/user-posts.js`
+**Ruta**: `GET /user-posts?year=YYYY&month=M`
+
+Este endpoint carga de forma asíncrona los días del mes solicitado en los que el usuario tiene reservas o anuncios publicados. Retorna JSON con la siguiente estructura:
+
+```json
+{ "14": { "reservation": true, "announcement": true }, "28": { "reservation": true, "announcement": false } }
+```
+
+**Flujo interno**:
+
+1. Se obtiene la sesión del usuario y se crea un `ForumClient` con sus cookies.
+2. Se extraen los IDs de tablón de `WHO` y de las `ROOMS` desde la configuración.
+3. Se itera por las páginas de mensajes del usuario (`/index.php?action=profile;area=showposts;sa=messages;start=N`), empezando desde `start=0` e incrementando de 15 en 15.
+4. En cada página se parsean los bloques `.windowbg` mediante `parseUserPostsPage(html)` en `src/lib/scraper.js`, extrayendo:
+   - ID del tablón (board)
+   - Asunto del mensaje (subject)
+   - Fecha de publicación (pubDate)
+   - Cuerpo del mensaje sin HTML (bodyText)
+5. Se clasifica cada post: si el tablón es el de `WHO` se trata como anuncio y se extrae la fecha del asunto (formato `Re:Día # de Mes`); si el tablón es una sala de reserva se trata como reserva y se extrae la fecha del cuerpo del mensaje.
+6. Se deja de consultar páginas cuando la fecha de publicación del post más antiguo es anterior al mes objetivo.
+7. Se filtran los resultados para devolver solo los días del mes solicitado y se devuelven en el JSON.
+
+**Parseo de fechas**:
+- **Anuncios** (board=WHO): el asunto tiene formato `Re:<DayName> <day> de <Month>` o `Re:<DayName> <day> <Month>`. Opcionalmente puede incluir ` del <Year>`.
+- **Reservas** (board de sala): la fecha se busca en el texto del cuerpo tras los patrones `para (?:el|la) <DayName> <day> de <Month>` o `reserva: <DayName> <day> de <Month>`. Si no se encuentra mes en el cuerpo, se usa como fallback el mes de la fecha de publicación del mensaje.
+
+### Calendario: aplicación de puntos en el cliente
+
+En `src/lib/templates.js`, la función `calendarPage()` incluye JavaScript que:
+
+1. Tras renderizar el calendario, llama a `fetchUserPosts()` que hace una petición GET a `/user-posts?year=...&month=...`.
+2. Cuando recibe la respuesta, actualiza la variable `userPosts` y vuelve a renderizar la cuadrícula.
+3. Por cada día, si existe entrada en `userPosts`, añade un `<span>` con forma de círculo de 6px de diámetro debajo del número:
+   - **Verde** (`#2ecc71`) si el día tiene `reservation: true` y `announcement: true`.
+   - **Naranja** (`#e67e22`) si el día tiene `reservation: true` y `announcement: false`.
+4. Al cambiar de mes o año, se vuelve a llamar a `fetchUserPosts()` para el nuevo período.

@@ -60,6 +60,17 @@ A continuación, esta página muestra un formulario con los siguientes campos:
     - Cambiar el MES mantiene la lista de DÍAS SELECCIONADOS tal cual.
     - En ambos casos se redibuja la cuadrícula del nuevo mes. Los días ya seleccionados que pertenezcan a meses distintos del que se está mostrando no se ven resaltados en la cuadrícula, pero siguen apareciendo en la lista de DÍAS SELECCIONADOS.
 
+##### Indicadores visuales de actividad del usuario
+
+Debajo del número de cada día del calendario puede aparecer un punto de color que indica si el usuario tiene alguna reserva o anuncio publicado para ese día:
+
+- **Punto verde**: el usuario tiene tanto una reserva de sala como un anuncio en "¿Cuándo estaremos?" para ese día.
+- **Punto naranja**: el usuario tiene una reserva de sala pero no tiene anuncio asociado para ese día.
+
+Estos puntos se cargan de forma asíncrona: la página del calendario se renderiza primero sin puntos, y una petición en segundo plano a `/user-posts?year=...&month=...` los recupera y los aplica sobre la cuadrícula. Si la petición falla o tarda, la página sigue siendo funcional sin los puntos.
+
+Los datos se obtienen analizando la lista de mensajes del usuario en el foro (`/index.php?action=profile;area=showposts;sa=messages`). Se recorren las páginas necesarias hasta encontrar todos los mensajes del mes visualizado. Los mensajes en tablones de reserva de salas (cuyo cuerpo contiene la fecha de la reserva) se consideran reservas, y los mensajes en el tablón "¿Cuándo estaremos?" (cuya fecha está en el asunto) se consideran anuncios.
+
 #### Detalles de la página LISTADO DE RESERVAS
 
 En la cabecera de la página hay un botón **"Volver al calendario"** que regresa a la página CALENDARIO manteniendo intacta la selección de días (año, mes y días marcados), para que el usuario pueda añadir o quitar días y volver a consultar.
