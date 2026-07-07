@@ -398,7 +398,7 @@ export function bookingsPage(username, rooms, bookingsData, announceError = '', 
 
 export function reservePage(username, room, days, formData, error, version = '0.0.0') {
   const errorHtml = error ? `<div class="error">${error}</div>` : '';
-  const dayOptions = days.split(',').map(d => `<option value="${d.trim()}">${d.trim()}</option>`).join('');
+  const dayOptions = days.split(',').map((d, i) => `<option value="${d.trim()}"${i === 0 ? ' selected' : ''}>${d.trim()}</option>`).join('');
 
   return layout('Reservar', `
     <div class="header">
@@ -418,7 +418,6 @@ export function reservePage(username, room, days, formData, error, version = '0.
           <div class="form-group">
             <label for="date">Fecha</label>
             <select id="date" name="date" required>
-              <option value="">Seleccionar día</option>
               ${dayOptions}
             </select>
           </div>
@@ -448,7 +447,7 @@ export function reservePage(username, room, days, formData, error, version = '0.
           </div>
           <div class="form-group checkbox-group">
             <input type="checkbox" id="announce" name="announce" value="1">
-            <label for="announce" style="margin:0;">Anunciar</label>
+            <label for="announce" style="margin:0;">Anunciar en ¿Cuándo estaremos?</label>
           </div>
           <div class="form-group">
             <label for="who">Quienes</label>
