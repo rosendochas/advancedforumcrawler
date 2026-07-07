@@ -98,7 +98,7 @@ export function calendarPage(username, year, months, selectedDays) {
     <div class="header">
       <div>
         <h1>FOROS MECATOL REX</h1>
-        <span class="user-info">Suplantando a: ${username}</span>
+        <span class="user-info">Suplantando a: ${truncate(username)}</span>
       </div>
       <a href="/logout" class="btn btn-danger">Cerrar sesión</a>
     </div>
@@ -337,7 +337,7 @@ export function bookingsPage(username, rooms, bookingsData, announceError = '') 
         <tr>
           <td>${r.date}</td>
           <td>${r.time}</td>
-          <td>${r.user}</td>
+          <td>${truncate(r.user)}</td>
           <td>${r.activity}</td>
         </tr>
       `).join('');
@@ -381,7 +381,7 @@ export function bookingsPage(username, rooms, bookingsData, announceError = '') 
     <div class="header">
       <div>
         <h1>FOROS MECATOL REX</h1>
-        <span class="user-info">Suplantando a: ${username}</span>
+        <span class="user-info">Suplantando a: ${truncate(username)}</span>
       </div>
       <a href="/calendar" class="btn btn-secondary">Volver al calendario</a>
     </div>
@@ -400,7 +400,7 @@ export function reservePage(username, room, days, formData, error) {
     <div class="header">
       <div>
         <h1>FOROS MECATOL REX</h1>
-        <span class="user-info">Suplantando a: ${username}</span>
+        <span class="user-info">Suplantando a: ${truncate(username)}</span>
       </div>
       <a href="/bookings?days=${encodeURIComponent(days)}" class="btn btn-secondary">Volver</a>
     </div>
@@ -491,4 +491,8 @@ function minutesOptions(selected) {
   return ['00', '15', '30', '45'].map(v =>
     `<option value="${v}" ${v === String(s).padStart(2, '0') ? 'selected' : ''}>${v}</option>`
   ).join('');
+}
+
+function truncate(str, max = 15) {
+  return str && str.length > max ? str.slice(0, max) + '...' : str;
 }
