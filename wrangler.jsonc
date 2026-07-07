@@ -1,0 +1,11 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "mecatol-foros",
+  "main": "src/index.js",
+  "compatibility_date": "2026-07-07",
+  "vars": {
+    "ROOMS": "Moria,https://www.mecatolrex.com/foro/index.php?board=26.0;Nostromo,https://www.mecatolrex.com/foro/index.php?board=8.0;Arkham,https://www.mecatolrex.com/foro/index.php?board=7.0",
+    "WHO": "https://www.mecatolrex.com/foro/index.php?board=2.0",
+    "FORUM_BASE": "https://www.mecatolrex.com/foro"
+  }
+}
