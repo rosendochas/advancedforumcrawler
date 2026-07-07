@@ -81,12 +81,15 @@ En la cabecera de la página hay un botón **"Volver al calendario"** que regres
 A continuación, la página muestra una sección por cada sala disponible. Cada sección se puede colapsar y contiene lo siguiente:
 
 - El **nombre de la sala** y un **enlace al tablón original del foro** (se abre en una pestaña nueva).
-- Una tabla con las reservas de los días seleccionados para esa sala, ordenadas por día y después por hora de inicio:
+- Una tabla con las reservas de los días seleccionados para esa sala, ordenadas por fecha ascendente y después por hora de inicio:
 
-| Fecha     | Hora         | Usuario | Actividad                        |
-|-----------|--------------|---------|----------------------------------|
-| Sábado 27 | 10:00-14:00  | Pilar   | Campaña de Arkham Horror LCG     |
-| Sábado 27 | 17:30-21:30  | Trizy   | Witchcraft                       |
+| Fecha       | Hora         | Usuario | Actividad                        |
+|-------------|--------------|---------|----------------------------------|
+| 27/06/26 (S)| 10:00-14:00  | Pilar   | Campaña de Arkham Horror LCG     |
+| 27/06/26 (S)| 17:30-21:30  | Trizy   | Witchcraft                       |
+
+- El formato de la fecha es `DD/MM/AA (D)` donde D es la inicial del día de la semana (L, M, X, J, V, S, D).
+- Si se han seleccionado días de distintos meses, la aplicación consulta el hilo de cada mes por separado y combina los resultados ordenados por fecha.
 
 - Si ninguno de los días seleccionados tiene reservas en esa sala, se muestra el mensaje **"Sin reservas"** en lugar de la tabla.
 - A la derecha de cada sección hay un botón **"Reservar"** que navega a la página RESERVAR llevando el contexto necesario (sala, hilo mes/año correspondiente y días seleccionados).

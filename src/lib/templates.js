@@ -335,7 +335,7 @@ export function bookingsPage(username, rooms, bookingsData, announceError = '') 
     } else if (data.rows && data.rows.length) {
       let rowsHtml = data.rows.map(r => `
         <tr>
-          <td>${r.date}</td>
+          <td>${r.formattedDate || r.date}</td>
           <td>${r.time}</td>
           <td>${truncate(r.user)}</td>
           <td>${r.activity}</td>

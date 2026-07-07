@@ -95,11 +95,7 @@ async function handleReservePost(env, session, room, days, postFields) {
       }
     }
 
-    const firstDate = days.split(',')[0];
-    const dateParts = firstDate?.match(/^\d+\/(\d+)\/(\d+)$/);
-    const month = dateParts ? dateParts[1] : '';
-    const year = dateParts ? String(2000 + parseInt(dateParts[2])) : '';
-    let bookingsUrl = `/bookings?year=${year}&month=${month}&days=${encodeURIComponent(days)}`;
+    let bookingsUrl = `/bookings?days=${encodeURIComponent(days)}`;
     if (announceError) {
       bookingsUrl += `&announce_error=${encodeURIComponent(announceError)}`;
     }
