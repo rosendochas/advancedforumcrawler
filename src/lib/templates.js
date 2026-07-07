@@ -385,7 +385,7 @@ export function bookingsPage(username, rooms, bookingsData, announceError = '') 
         <h1>FOROS MECATOL REX</h1>
         <span class="user-info">Suplantando a: ${truncate(username)}</span>
       </div>
-      <a href="/calendar" class="btn btn-secondary">Volver al calendario</a>
+      <a href="/calendar" class="btn btn-secondary">Volver</a>
     </div>
     <div class="container">
       ${roomsHtml}
