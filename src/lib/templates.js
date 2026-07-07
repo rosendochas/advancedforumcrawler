@@ -73,8 +73,8 @@ export function loginPage(error = '') {
         ${errorHtml}
         <form method="POST" action="/login">
           <div class="form-group">
-            <label for="email">Email</label>
-            <input type="email" id="email" name="email" required placeholder="tu@email.com">
+            <label for="email">Email o nombre de usuario</label>
+            <input type="text" id="email" name="email" required placeholder="tu@email.com o usuario">
           </div>
           <div class="form-group">
             <label for="password">Contraseña</label>

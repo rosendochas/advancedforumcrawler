@@ -18,9 +18,9 @@ Quiero hacer una aplicación web que se conecte a unos foros con mis credenciale
 #### Detalles de la página LOGIN
 
 Esta página muestra un formulario con los siguientes campos:
-- EMAIL: campo de texto de tipo email.
+- IDENTIFICADOR: campo de texto.
     - Valor por defecto: vacío.
-    - Validaciones: solo permite introducir un email válido.
+    - Acepta tanto el email como el nombre de usuario del foro.
 - CONTRASEÑA: campo de texto de tipo contraseña.
     - Valor por defecto: vacío.
 - BOTÓN "Identificarse": envía el formulario.
