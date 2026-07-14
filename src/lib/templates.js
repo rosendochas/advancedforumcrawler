@@ -338,14 +338,23 @@ export function bookingsPage(username, rooms, bookingsData, announceError = '', 
     } else if (data.error === 'no-thread') {
       sectionContent = '<p style="color:#888;">Aún no hay hilo para el mes seleccionado</p>';
     } else if (data.rows && data.rows.length) {
-      let rowsHtml = data.rows.map(r => `
-        <tr>
-          <td>${r.formattedDate || r.date}</td>
-          <td>${r.time}</td>
-          <td>${truncate(r.user)}</td>
-          <td>${r.activity}</td>
+      let lastDate = '';
+      let colorToggle = false;
+      let rowsHtml = data.rows.map(r => {
+        const date = r.formattedDate || r.date;
+        if (date !== lastDate) {
+          lastDate = date;
+          colorToggle = !colorToggle;
+        }
+        const bgColor = colorToggle ? '#ffffff' : '#f0f0f0';
+        return `
+        <tr style="background:${bgColor};">
+          <td style="padding:6px;">${date}</td>
+          <td style="padding:6px;">${r.time}</td>
+          <td style="padding:6px;">${truncate(r.user)}</td>
+          <td style="padding:6px;">${r.activity}</td>
         </tr>
-      `).join('');
+      `}).join('');
       sectionContent = `<table style="width:100%;border-collapse:collapse;">
         <thead><tr><th style="text-align:left;padding:6px;border-bottom:2px solid #ddd;">Fecha</th><th style="text-align:left;padding:6px;border-bottom:2px solid #ddd;">Hora</th><th style="text-align:left;padding:6px;border-bottom:2px solid #ddd;">Usuario</th><th style="text-align:left;padding:6px;border-bottom:2px solid #ddd;">Actividad</th></tr></thead>
         <tbody>${rowsHtml}</tbody>
