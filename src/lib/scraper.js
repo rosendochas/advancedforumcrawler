@@ -101,6 +101,10 @@ export function findBoardThreads(html) {
     if (!linkText || linkText.length < 2) continue;
     if (msgPart !== undefined && msgPart !== '0') continue;
 
+    const tagEnd = match[0].indexOf('>');
+    const openingTag = tagEnd > -1 ? match[0].slice(0, tagEnd) : '';
+    if (/\bclass\s*=\s*"[^"]*\bnew_posts\b[^"]*"/i.test(openingTag)) continue;
+
     if (!threads.find(t => t.topicId === topicId)) {
       threads.push({ title: linkText, href, topicId });
     }
