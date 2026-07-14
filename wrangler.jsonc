@@ -8,6 +8,6 @@
     "WHO": "https://www.mecatolrex.com/foro/index.php?board=2.0",
     "FORUM_BASE": "https://www.mecatolrex.com/foro",
     "DEBUG": "false",
-    "BUILD_VERSION": "0.0.2"
+    "BUILD_VERSION": "0.0.3"
   }
 }
